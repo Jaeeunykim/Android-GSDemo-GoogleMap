@@ -65,7 +65,7 @@
                 android:name="android.hardware.usb.action.USB_ACCESSORY_ATTACHED"
                 android:resource="@xml/accessory_filter" />
         </activity>
-
+<!-- dji의  GlobalService를 등록. background로 실행시키기 위해서  -->
         <service android:name="dji.sdk.sdkmanager.DJIGlobalService"></service>
 
         <!-- DJI SDK -->
