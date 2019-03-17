@@ -160,6 +160,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
         IntentFilter filter = new IntentFilter();
         filter.addAction(DJIDemoApplication.FLAG_CONNECTION_CHANGE);
+        //broadcaset를 수신하기 위한 recevier를 등록 
         registerReceiver(mReceiver, filter);
 
         initUI();
@@ -172,6 +173,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
     }
 
+    //BroadcaseRecevier 멤버 변수 생성 및 초기화
+    //onReceive하는 경우 callback을 계속 등록하도록 구현 즉, broadcaset 메시지를 수신할때마다 onProductConnectionChange 호출 
     protected BroadcastReceiver mReceiver = new BroadcastReceiver() {
 
         @Override

@@ -8,6 +8,7 @@ import com.secneo.sdk.Helper;
 public class MApplication extends Application {
 
     private DJIDemoApplication fpvDemoApplication;
+    //Helper는 ....하는 용도로 사용.
     @Override
     protected void attachBaseContext(Context paramContext) {
         super.attachBaseContext(paramContext);
