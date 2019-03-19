@@ -107,6 +107,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         this.finish();
     }
 
+
+    //Toast 메소드 구현 
     private void setResultToToast(final String string){
         MainActivity.this.runOnUiThread(new Runnable() {
             @Override
@@ -116,8 +118,10 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         });
     }
 
+    //UI초기화 
     private void initUI() {
 
+        //button id 찾기
         locate = (Button) findViewById(R.id.locate);
         add = (Button) findViewById(R.id.add);
         clear = (Button) findViewById(R.id.clear);
@@ -126,6 +130,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         start = (Button) findViewById(R.id.start);
         stop = (Button) findViewById(R.id.stop);
 
+        //버튼등의 리스너 등록 
         locate.setOnClickListener(this);
         add.setOnClickListener(this);
         clear.setOnClickListener(this);
@@ -143,6 +148,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         // When the compile and target version is higher than 22, please request the
         // following permissions at runtime to ensure the
         // SDK work well.
+    
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.VIBRATE,
@@ -158,6 +164,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
         setContentView(R.layout.activity_main);
 
+        
         IntentFilter filter = new IntentFilter();
         filter.addAction(DJIDemoApplication.FLAG_CONNECTION_CHANGE);
         //broadcaset를 수신하기 위한 recevier를 등록 
@@ -169,7 +176,9 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        //wayPointMaissionOperator리스너 추가 
         addListener();
+        
 
     }
 
@@ -189,6 +198,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         loginAccount();
     }
 
+    //로그인 계정 로그인 성공 에러 여부 확인 
     private void loginAccount(){
 
         UserAccountManager.getInstance().logIntoDJIUserAccount(this,
@@ -205,6 +215,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 });
     }
 
+    //FlightController를 가지고 stateCallback으로 위치정보(위도,경도) 가지고 오고 
+    //updateDroneLocation 메소드로 지도위의 마커(aircraft) 해당위치로 업데이트 해줌 
     private void initFlightController() {
 
         BaseProduct product = DJIDemoApplication.getProductInstance();
@@ -227,6 +239,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         }
     }
 
+    //waypointMissionOperator : waypoint mission을 모니터하거나 실행 시키는 동작을 컨트롤 하는 객체
     //Add Listener for WaypointMissionOperator
     private void addListener() {
         if (getWaypointMissionOperator() != null){
@@ -234,12 +247,14 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         }
     }
 
+    //waypointMissionOperator리너스삭제
     private void removeListener() {
         if (getWaypointMissionOperator() != null) {
             getWaypointMissionOperator().removeListener(eventNotificationListener);
         }
     }
 
+    //waypointMissionOperator 리스너 인스턴스화 
     private WaypointMissionOperatorListener eventNotificationListener = new WaypointMissionOperatorListener() {
         @Override
         public void onDownloadUpdate(WaypointMissionDownloadEvent downloadEvent) {
@@ -266,7 +281,9 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             setResultToToast("Execution finished: " + (error == null ? "Success!" : error.getDescription()));
         }
     };
-
+    
+    //waypointMissionOperator는 baseComponent : Mission Method: getMissionControl();
+    //getWaypointMissionOperator 객체 가지고 오기 
     public WaypointMissionOperator getWaypointMissionOperator() {
         if (instance == null) {
             if (DJISDKManager.getInstance().getMissionControl() != null){
@@ -276,10 +293,14 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         return instance;
     }
 
+    //MapClick리스너 추가 
     private void setUpMap() {
         gMap.setOnMapClickListener(this);// add the listener for click for amap object
 
     }
+
+    //맵을 클릭하면 해당 포인트에 마커가 그려지고, 여러 웨이포인트를 arraylist에 저장 waypointBuilder를 통해
+    //해당 웨이포인트 갯수와 리스트를 전달 및 생성 
 
     @Override
     public void onMapClick(LatLng point) {
@@ -301,11 +322,13 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         }
     }
 
+    //위도 경도 좌표 범위 체크 
     public static boolean checkGpsCoordination(double latitude, double longitude) {
         return (latitude > -90 && latitude < 90 && longitude > -180 && longitude < 180) && (latitude != 0f && longitude != 0f);
     }
 
     // Update the drone location based on states from MCU.
+    // 맵상의 마커 위치 업데이트 
     private void updateDroneLocation(){
 
         LatLng pos = new LatLng(droneLocationLat, droneLocationLng);
@@ -328,6 +351,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         });
     }
 
+    //마커웨이포인트  맵에 그리기 
     private void markWaypoint(LatLng point){
         //Create MarkerOptions object
         MarkerOptions markerOptions = new MarkerOptions();
@@ -337,6 +361,9 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         mMarkers.put(mMarkers.size(), marker);
     }
 
+
+    //UI에서 클릭한 뷰에 따라 위치를 업데이트 하거나, 웨이포인트 등록 가능하도록(add), 웨이포인트 지우기, 세팅 상태 확인 
+    //웨이포인트 미션 업로드, 시작, 멈춤 , 종료 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -383,6 +410,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         }
     }
 
+    //UI맵화면의 frame으로 해당 좌표가 화면의 중심이 되도록 함 
     private void cameraUpdate(){
         LatLng pos = new LatLng(droneLocationLat, droneLocationLng);
         float zoomlevel = (float) 18.0;
@@ -391,6 +419,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
     }
 
+    //add버튼을 눌러서 웨이포인트 지정하능하도록 하고 완료되어 다시 버튼을 누르면 add기능 끔
     private void enableDisableAdd(){
         if (isAdd == false) {
             isAdd = true;
@@ -401,6 +430,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         }
     }
 
+    //웨이포인트 설정 확인 
     private void showSettingDialog(){
         LinearLayout wayPointSettings = (LinearLayout)getLayoutInflater().inflate(R.layout.dialog_waypointsetting, null);
 
@@ -409,6 +439,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         RadioGroup actionAfterFinished_RG = (RadioGroup) wayPointSettings.findViewById(R.id.actionAfterFinished);
         RadioGroup heading_RG = (RadioGroup) wayPointSettings.findViewById(R.id.heading);
 
+        //스피드 선택 리스너 (저,중,고) 속도 선택 
         speed_RG.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener(){
 
             @Override
@@ -424,6 +455,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
         });
 
+        //웨이포인트 미션 수행 후 액션 동작 선택 (none, gohome, landing, go to first waypoint)
         actionAfterFinished_RG.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
 
             @Override
@@ -441,6 +473,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             }
         });
 
+        //heading설정 (auto, 초기설정 방향, RC에 의해 설정, waypoint방향 )
         heading_RG.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
 
             @Override

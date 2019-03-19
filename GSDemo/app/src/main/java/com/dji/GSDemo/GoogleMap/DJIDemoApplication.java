@@ -17,6 +17,8 @@ import dji.sdk.sdkmanager.DJISDKManager;
 import dji.common.error.DJIError;
 import dji.common.error.DJISDKError;
 
+//Connection관련 : register, DJI 제품연결 
+
 public class DJIDemoApplication extends Application {
 
     private static final String TAG = DJIDemoApplication.class.getName();
@@ -53,6 +55,14 @@ public class DJIDemoApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
+        //사용자 입력이 필수적이 프로그램에서 Handler 필요 
+        //서브스레드에서 메인스레드로 접근 가능 방법 Handler/looper
+        //쓰레드간에 통신하는 Handler생성 / MessageQueue에 종속 (1개의 쓰레드는 1개의 핸들러 갖음)
+        //looper 계속 돌면서 자신이 속한 쓰레드의 메시지큐에서 메시지 있는지 확인, 수신,send 기능 함 (looper는 새로생성한쓰레드는 기본적으로 가지고 있지 않음)
+        //메시지큐에 있는 내용을 가지고 run에서 처리 
+
+        //메인쓰레드의 루퍼를 가지고와서 핸드러 생성함 
+        //즉, UI쓰레드에 Runnable작업 혹은 message보내기 위해 
         mHandler = new Handler(Looper.getMainLooper());
 
         /**
